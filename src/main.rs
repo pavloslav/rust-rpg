@@ -6,13 +6,14 @@ struct Warrior {
 	hp: i32,
 	weapon: Weapon,
 	name: String,
+	max_hp: i32,
 }
 
 impl Warrior {
 	fn attack( &mut self, other: &mut Warrior) {
 		println!("{} is attacking {} with {}",self.name, other.name,self.weapon.name);
 		let result = self.weapon.hit(other);
-		println!("{:?}", result)
+		println!("{}", result)
 	}
 	fn apply_damage( &mut self, damage: i32 ) -> i32 {
 		self.hp -= damage;
@@ -23,6 +24,7 @@ impl Warrior {
 			hp: hp,
 			weapon: weapon,
 			name: name.to_owned(),
+			max_hp: hp,
 		}
 	}
 	fn is_alive( &self ) -> bool {
@@ -38,9 +40,25 @@ struct Weapon {
 
 #[derive(Debug)]
 enum AttackResult {
-	Wounded,
+	Wounded(f64),
 	Missed,
 	Killed
+}
+
+impl std::fmt::Display for AttackResult {
+	fn fmt(&self, f:&mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
+		match *self {
+			AttackResult::Wounded(part) => {
+				write!(f,"Wounded for {}%.",(part*100.0).round())
+			},
+			AttackResult::Missed => {
+				write!(f,"...but missed.")
+			},
+			AttackResult::Killed => {
+				write!(f,"...and killed!!!")
+			}
+		}
+	}
 }
 
 impl Weapon {
@@ -49,7 +67,7 @@ impl Weapon {
 		if !target.is_alive() {
 			AttackResult::Killed
 		} else if damage_done > 0 {
-			AttackResult::Wounded
+			AttackResult::Wounded(target.hp as f64/target.max_hp as f64)
 		} else {
 			AttackResult::Missed
 		}
