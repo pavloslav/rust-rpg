@@ -11,6 +11,7 @@ fn main() {
     let mut arena = Arena1v1 { fighters:Vec::new() };
     arena.fighters.push( Warrior::new(50, Weapon::new("Sword",10,15), "Orc"    ) );
     arena.fighters.push( Warrior::new(60, Weapon::new("Axe",  15,15), "Knight" ) );
-    arena.fighters[0].attack( &mut arena.fighters[1] );
-    arena.fighters[1].attack( &mut arena.fighters[0] );
+    let (f1, f2) = arena.fighters.split_at_mut(1);
+    f1[0].attack( &mut f2[0] );
+    f2[0].attack( &mut f1[0] );
 }
