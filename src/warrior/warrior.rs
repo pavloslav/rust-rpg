@@ -38,7 +38,83 @@ impl Warrior {
     }
 }
 
+#[cfg(test)]
 mod test{
+    #[test]
+    fn test_name() {
+        use Weapon;
+        use Warrior;
+        let erik = Warrior::new(50, Weapon::new( "Helmet", 5, 10 ), "Erik the Swift");
+        assert!( erik.name == "Erik the Swift" );        
+    }
+
+    #[test]
+    fn test_hp() {
+        use Weapon;
+        use Warrior;
+        let olaf = Warrior::new(200,Weapon::new( "Shield", 0, 0  ), "Olaf the Stout");
+        assert!( olaf.hp == 200 );
+        assert!( olaf.max_hp == 200 );        
+    }
+
+    #[test]
+    fn test_weapon() {
+        use Weapon;
+        use Warrior;
+        let baleog = Warrior::new(100,Weapon::new( "Sword", 10, 20 ), "Baleog the Fierce");
+        assert!( baleog.weapon.get_name() == "Sword" );        
+    }
+
+    #[test]
+    fn test_attack() {
+        use Weapon;
+        use Warrior;
+        let mut erik   = Warrior::new(50, Weapon::new( "Helmet", 5, 10 ), "Erik the Swift");
+        let mut baleog = Warrior::new(100,Weapon::new( "Sword", 10, 20 ), "Baleog the Fierce");
+        for _ in 0..5 {
+            baleog.attack( &mut erik );
+        }
+        assert!( !erik.is_alive() );
+    }
+
+    #[test]
+    fn test_damage() {
+        use Weapon;
+        use Warrior;
+        let mut baleog = Warrior::new(100,Weapon::new( "Sword", 10, 20 ), "Baleog the Fierce");
+        baleog.apply_damage(10);
+        assert!( baleog.hp == 90 );
+    }
+
+    #[test]
+    fn test_percent() {
+        use Weapon;
+        use Warrior;
+        let mut olaf  = Warrior::new(200,Weapon::new( "Shield", 0, 0  ), "Olaf the Stout");
+        olaf.apply_damage(10);
+        assert!( olaf.percent() == 95 );
+    }
+
+    #[test]
+    fn test_select() {
+        use Weapon;
+        use Warrior;
+        let baleog = Warrior::new(100,Weapon::new( "Sword", 10, 20 ), "Baleog the Fierce");
+        let mut goblins:Vec<_> = (0..5).map(|_|
+                              Warrior::new(10,Weapon::new("Stick", 1,2), "Pesky goblin"))
+                                       .collect();
+        goblins.push( Warrior::new( 1, Weapon::new( "Stick", 1, 2 ), "Gremlin" ) );
+        match baleog.select_enemy( goblins.iter_mut() ) {
+            Some(goblin) => {
+                assert!(goblin.name == "Gremlin");
+            },
+            None => {
+                panic!();
+            }
+        }
+
+    }
+
     #[test]
     fn test_warrior() {
         use Weapon;
@@ -78,4 +154,5 @@ mod test{
             }
         }
     }
+
 }
