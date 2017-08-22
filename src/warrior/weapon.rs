@@ -59,9 +59,47 @@ impl Weapon {
     }
 }
 
-
+#[cfg(test)]
 mod test{
+    #[test]
+    fn test_new() {
+        use Weapon;
+        let club = Weapon::new( "Club", 10, 15 );
+        assert!( club.name == "Club" );
+        assert!( club.get_name() == "Club" );
+        assert!( club.min_dmg == 10 );
+        assert!( club.max_dmg == 15 );
+    }
 
+    #[test]
+    fn test_rnd() {
+        use Weapon;
+        let club      = Weapon::new( "Club",     10, 15 );
+        let sword     = Weapon::new( "Sword",    20, 30 );
+        let toothpick = Weapon::new( "Toothpick", 1, 1  );
+        for _ in 0..100 {
+            let club_damage = club.get_rnd_damage();
+            assert!( (10 <= club_damage) && (club_damage <= 15) );
+            let sword_damage = sword.get_rnd_damage();
+            assert!( (20 <= sword_damage) && (sword_damage <= 30) );
+            let toothpick_damage = toothpick.get_rnd_damage();
+            assert!( toothpick_damage == 1 );
+        }
+    }        
+    #[test]
+    fn test_hit() {
+        use Weapon;
+        use Warrior;
+        let club      = Weapon::new( "Club",     10, 15 );
+        let sword     = Weapon::new( "Sword",    20, 30 );
+        let toothpick = Weapon::new( "Toothpick", 1, 1  );
+        let mut manchkin = Warrior::new( 100, club, "Dummy" );
+        let old_hp = manchkin.percent();
+        toothpick.hit( &mut manchkin );
+        assert!( manchkin.percent() == 99);
+        sword.hit( &mut manchkin );
+        assert!( manchkin.percent() < old_hp );
+    }
     #[test]
     fn test_weapon() {
         use Weapon;
