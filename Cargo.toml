@@ -5,4 +5,4 @@ authors = ["Slavynskiy Pavlo <pavloslav@gmail.com>"]
 
 [dependencies]
 rand = "0.3"
-sfml = "0.12.0"
+sdl2 = "0.30.0"

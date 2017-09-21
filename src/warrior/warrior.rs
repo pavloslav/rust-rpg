@@ -29,7 +29,7 @@ impl Warrior {
     pub fn is_alive( &self ) -> bool {
         self.hp >= 0
     }
-    pub fn select_enemy<'a,I>( &self, others: I) -> Option<&'a mut Warrior>
+    pub fn select_enemy<'a, I>( &self, others: I) -> Option<&'a mut Warrior>
             where I: Iterator<Item = &'a mut Warrior> {
         others.min_by_key(|warrior|warrior.hp)
     }
